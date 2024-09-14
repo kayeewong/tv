@@ -110,7 +110,7 @@ const TopNavigation = () => {
                         <p>Kayee</p>
                         <p>@kayee</p>
                       </span>
-                      <Link href={`/channels`} className="text-blue-500">View your channel</Link>
+                      <Link href={`/channels/${process.env.NEXT_PUBLIC_CHANNEL_ID}`} className="text-blue-500">View your channel</Link>
                     </div>
                   </div>
                 </DropdownMenuLabel>

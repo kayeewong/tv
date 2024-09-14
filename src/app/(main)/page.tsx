@@ -1,10 +1,14 @@
 'use client'
 
+import { useState } from "react";
+import useSWR from "swr";
+
 import Thumbnail from "@/components/Thumbnail";
 import { fetchVideo } from "@/lib/api";
 import { useState } from "react";
 import useSWR from "swr";
 import { Video } from "@/types"
+import Loading from "../loading";
 
 export default function Home() {
   const [badge, setBadge] = useState('All')
@@ -26,6 +30,7 @@ export default function Home() {
       </div>
 
       <div className="flex flex-wrap">
+        { isLoading && Array(21).fill(null).map((i, idx) => <Loading key={idx}></Loading>) }
         { videoResults?.map((video: Video) => (
           <Thumbnail key={video.id} video={video} />
         ))}

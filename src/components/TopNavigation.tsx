@@ -1,6 +1,6 @@
 'use client'
 
-import { FormEvent, useRef, useState } from "react"
+import { FormEvent, useContext, useRef, useState } from "react"
 import { Bell, Menu, Search, Tv2, Video } from "lucide-react"
 import Link from 'next/link'
 import { ThemeToggle } from "./ThemeToggle"
@@ -20,9 +20,11 @@ import {
   DropdownMenuSeparator
 } from "@/components/ui/dropdown-menu"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import AppContext from "@/context/appContext"
 
 const TopNavigation = () => {
   const [dialogOpen, setDialogOpen] = useState<boolean>(false)
+  const { setShowNav } = useContext(AppContext)
   
   const searchInputRef = useRef<HTMLInputElement>(null)
 
@@ -39,7 +41,9 @@ const TopNavigation = () => {
       <div className="flex justify-between items-center px-2 md:px-7 h-16">
         <div className="flex items-center">
           <span className="hover:bg-background-dark/30 md:block hidden hover:text-white cursor-pointer rounded-full p-2 mr-1">
-            <Menu size={30}></Menu>
+            <Menu
+              onClick={() => setShowNav(prevState => !prevState)}
+              size={30}></Menu>
           </span>
           <Link href='/' className="flex items-center space-x-2">
             <Tv2 size={48} className="text-red-700"></Tv2>

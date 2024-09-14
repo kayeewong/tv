@@ -13,7 +13,11 @@ export default function Home() {
     data: videoResults,
     error,
     isLoading
-  } = useSWR(`fetchVideo/${badge}`, () => fetchVideo('QUERY'))
+  } = useSWR(`fetchVideo/${badge}`, () => fetchVideo(badge))
+
+  if (error) {
+    throw new Error('Error fetching video data')
+  }
   
   return (
     <>

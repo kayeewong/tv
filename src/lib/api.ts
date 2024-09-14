@@ -1,4 +1,4 @@
-import { Video } from '@/types'
+import { Video, VideoDetails } from '@/types'
 import axios from 'axios'
 
 const BASE_URL = process.env.NEXT_PUBLIC_RAPID_BASE_URL
@@ -40,9 +40,7 @@ export const fetchVideo = async(
           publishedTimeText: video.publishedTimeText
         })
       }
-    }
-    console.log(videos);
-    
+    }    
 
     return videos
 
@@ -56,4 +54,40 @@ export const fetchVideo = async(
     throw error
   }
 
+}
+
+export const fetchVideoDetails = async(id: string) => {
+  let error: Error
+  try {
+    const { data: video } = await axios.request({
+      method: 'GET',
+      url: `${BASE_URL}/video/info`,
+      params: { id },
+      headers: {
+        'x-rapidapi-key': API_KEY,
+        'x-rapidapi-host': API_HOST
+      }
+    })
+
+    const videoDetails: VideoDetails = {
+      title: video.title,
+      videoUrl: process.env.NEXT_PUBLIC_VIDEO_BASE_URL + id,
+      likes: video.likeCount,
+      description: video.description,
+      publishedDate: video.publishedAt,
+      channelImage: video.channelThumbnail?.length && video.channelThumbnail[0].url,
+      channelName: video.channelTitle,
+      subscribersCountText: video.subscriberCountText
+    }
+    return videoDetails
+    
+  } catch (e: unknown) {
+    if (e instanceof Error) {
+      error = e;
+    } else {
+      throw new Error("We can't handle that type of exception!");
+    }
+    console.log('Error get video', error.message)
+    throw error
+  }
 }

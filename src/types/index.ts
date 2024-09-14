@@ -12,3 +12,14 @@ export type Video = {
   publishedDate: string,
   publishedTimeText: string
 }
+
+export type VideoDetails = {
+  title: string,
+  videoUrl: string,
+  likes: string,
+  description: string,
+  publishedDate: string,
+  channelImage: string,
+  channelName: string,
+  subscribersCountText: string
+}

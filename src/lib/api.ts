@@ -1,4 +1,4 @@
-import { Video, VideoDetails } from '@/types'
+import { channelHome, Video, VideoDetails } from '@/types'
 import axios from 'axios'
 
 const BASE_URL = process.env.NEXT_PUBLIC_RAPID_BASE_URL
@@ -129,6 +129,68 @@ export const fetchRelatedVideos = async(id: string) => {
 
     return relatedVideos
     
+  } catch (e: unknown) {
+    if (e instanceof Error) {
+      error = e;
+    } else {
+      throw new Error("We can't handle that type of exception!");
+    }
+    console.log('Error get video', error.message)
+    throw error
+  }
+}
+
+export const fetchChannelHome = async(id: string) => {
+  let error: Error
+  try {
+    const { data: { meta: channel, data: media } } = await axios.request({
+      method: 'GET',
+      url: BASE_URL + '/channel/home',
+      params: { id },
+      headers: {
+        'x-rapidapi-key': API_KEY,
+        'x-rapidapi-host': API_HOST
+      }
+    })    
+
+    const videos: Video[] = []
+
+    // TODO
+    for(const video of (media.length && media[1].data)) {
+      const id = video.videoId
+      if (id) {
+        videos.push({
+          id,
+          title: video.title,
+          description: '',
+          thumbnail: video.thumbnail?.length && video.thumbnail[0].url,
+          viewCount: video.viewCount,
+          channel: {
+            channelId: '',
+            channelTitle: '',
+            channelImage: ''
+          },
+          publishedDate: '',
+          publishedTimeText: video.publishedTimeText
+        })
+      }
+    }
+
+    const channelHome: channelHome = {
+      id: channel.channelId,
+      title: channel.title,
+      avatar: channel.avatar?.length && channel.avatar[0].url,
+      banner: channel.banner?.length && channel.banner[0].url,
+      channelHandle: channel.channelHandle,
+      subscriberCount: channel.subscriberCount,
+      subscriberCountText: channel.subscriberCountText,
+      videosCount: channel.videosCount,
+      videosCountText: channel.videosCountText,
+      Videos: videos
+    }
+
+    return channelHome
+
   } catch (e: unknown) {
     if (e instanceof Error) {
       error = e;

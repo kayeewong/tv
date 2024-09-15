@@ -23,3 +23,16 @@ export type VideoDetails = {
   channelName: string,
   subscribersCountText: string
 }
+
+export type channelHome = {
+  id: string,
+  title: string,
+  avatar: string,
+  banner: string,
+  channelHandle: string,
+  subscriberCount: number,
+  subscriberCountText: string,
+  videosCount: number,
+  videosCountText: string,
+  Videos: Array<Video>
+}

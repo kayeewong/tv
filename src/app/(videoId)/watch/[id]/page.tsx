@@ -4,12 +4,13 @@ import { useState } from 'react'
 import ReactPlayer from 'react-player'
 import useSWR from "swr"
 
-import { fetchVideoDetails } from "@/lib/api"
+import { fetchRelatedVideos, fetchVideoDetails } from "@/lib/api"
 import { useParams } from "next/navigation"
 import Loading from "../../loading"
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { ThumbsDown, ThumbsUp } from 'lucide-react'
 import { formatCount } from '@/lib/utils'
+import RelatedVideos from '@/components/RelatedVideos'
 
 const VideoDetails = () => {
   const { id } = useParams()
@@ -25,11 +26,19 @@ const VideoDetails = () => {
     revalidateOnFocus: false
   })
 
-  if (error) {
+  const {
+    data: relatedVideos,
+    isLoading: isLoadingRelated,
+    error: errorRelated
+  } = useSWR(
+    `/relatedVideos`, () => fetchRelatedVideos(id as string)
+  )
+
+  if (error || errorRelated) {
     throw new Error('Error fetching video')
   }
 
-  if(isLoading) return <Loading></Loading> 
+  if(isLoading || isLoadingRelated) return <Loading></Loading> 
 
   return (
     <div className="mb-9">
@@ -89,6 +98,12 @@ const VideoDetails = () => {
             </p>
           </div>
         </div>
+
+        <aside className='md:col-span-4 col-span-12'>
+          { relatedVideos?.map(video => (
+            <RelatedVideos key={video.id} video={video}></RelatedVideos>
+          )) }
+        </aside>
       </div>
     </div>
   )

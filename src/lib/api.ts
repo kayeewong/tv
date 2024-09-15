@@ -91,3 +91,51 @@ export const fetchVideoDetails = async(id: string) => {
     throw error
   }
 }
+
+export const fetchRelatedVideos = async(id: string) => {
+  let error: Error
+  try {
+    const { data } = await axios.request({
+      method: 'GET',
+      url: BASE_URL + '/related',
+      params: { id },
+      headers: {
+        'x-rapidapi-key': API_KEY,
+        'x-rapidapi-host': API_HOST
+      }
+    })
+
+    const relatedVideos: Video[] = []
+
+    for(const video of data.data) {
+      const id = video.videoId
+      if (id) {
+        relatedVideos.push({
+          id,
+          title: video.title,
+          description: '',
+          thumbnail: video.thumbnail?.length && video.thumbnail[0].url,
+          viewCount: video.viewCount,
+          channel: {
+            channelId: video.channelId,
+            channelTitle: video.channelTitle,
+            channelImage: video.channelThumbnail?.length && video.channelThumbnail[0].url,
+          },
+          publishedDate: video.publishDate,
+          publishedTimeText: video.publishedTimeText
+        })
+      }
+    }
+
+    return relatedVideos
+    
+  } catch (e: unknown) {
+    if (e instanceof Error) {
+      error = e;
+    } else {
+      throw new Error("We can't handle that type of exception!");
+    }
+    console.log('Error get video', error.message)
+    throw error
+  }
+}

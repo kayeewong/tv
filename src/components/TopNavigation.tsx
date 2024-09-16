@@ -21,9 +21,12 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import AppContext from "@/context/appContext"
+import { useRouter } from "next/navigation"
 
 const TopNavigation = () => {
   const [dialogOpen, setDialogOpen] = useState<boolean>(false)
+  const router = useRouter()
+
   const { setShowNav } = useContext(AppContext)
   
   const searchInputRef = useRef<HTMLInputElement>(null)
@@ -32,8 +35,10 @@ const TopNavigation = () => {
     event.preventDefault()
 
     if(searchInputRef.current) {
-      console.log(searchInputRef.current.value);
-      
+      const searchQuery = searchInputRef.current.value
+
+      setDialogOpen(false)
+      router.push(`/search?q=${searchQuery}`)
     }
   }
   return (
